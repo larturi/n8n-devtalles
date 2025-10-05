@@ -1,0 +1,23 @@
+services:
+    db:
+      image: postgres:16-alpine
+      container_name: pg-n8n-poc
+      restart: unless-stopped
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_DB: n8n_poc
+        POSTGRES_USER: n8n
+        POSTGRES_PASSWORD: n8n
+      volumes:
+        - pgdata_n8n:/var/lib/postgresql/data
+        - ./initdb:/docker-entrypoint-initdb.d
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U n8n -d n8n_poc"]
+        interval: 5s
+        timeout: 3s
+        retries: 10
+
+volumes:
+  pgdata_n8n:
+  

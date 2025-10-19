@@ -1,0 +1,138 @@
+{
+  "name": "Gmail MCP Server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "a9a5ab34-db3f-4e06-8835-5a96b1d61c3e"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        64,
+        0
+      ],
+      "id": "492ce343-643f-43a9-9fc4-ed7e40232dde",
+      "name": "MCP Server Trigger",
+      "webhookId": "a9a5ab34-db3f-4e06-8835-5a96b1d61c3e"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        128,
+        224
+      ],
+      "id": "1ca6ceed-0723-4df1-8e9a-7c1138d7bc99",
+      "name": "send_email",
+      "webhookId": "0afba5ed-e9c9-4ec0-97ad-05b7e0607108",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Fb4OJ3dvsToYv4SQ",
+          "name": "Gmail: lea.arturi@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "simple": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify', ``, 'boolean') }}",
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        256,
+        224
+      ],
+      "id": "975ab930-2a37-4ee3-90e2-53aef05b75cf",
+      "name": "get_emails",
+      "webhookId": "0afba5ed-e9c9-4ec0-97ad-05b7e0607108",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Fb4OJ3dvsToYv4SQ",
+          "name": "Gmail: lea.arturi@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "html",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        224
+      ],
+      "id": "e538f006-714b-4803-b449-faec582edca2",
+      "name": "create_draft",
+      "webhookId": "0afba5ed-e9c9-4ec0-97ad-05b7e0607108",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Fb4OJ3dvsToYv4SQ",
+          "name": "Gmail: lea.arturi@gmail.com"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "send_email": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_emails": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fcb027a6-f7aa-4b8d-b8df-84f7130164ec",
+  "meta": {
+    "instanceId": "ec034f4ec00924227e26a740287d46cdb2435d7c6eed6e6242f82f145235dfc5"
+  },
+  "id": "43ISKt01DR7DdY3I",
+  "tags": []
+}

@@ -1,0 +1,121 @@
+{
+  "name": "Pokemon Finder Tool",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"name\": \"a string\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f99ac20f-2f57-4f16-9de4-3291fdd14ea9",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "384f539e-02df-4ace-9bcf-7e2b17bdf5ce",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "ab99eda5-7f60-4523-b0e5-a4901b559f9e",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "63e66a3d-c040-4838-b1ea-7a57ab4a354a",
+              "name": "sprites.back_default",
+              "value": "={{ $json.sprites.back_default }}",
+              "type": "string"
+            },
+            {
+              "id": "13d41969-05f3-4ae8-bbf9-0a49c7fb4051",
+              "name": "sprites.front_default",
+              "value": "={{ $json.sprites.front_default }}",
+              "type": "string"
+            },
+            {
+              "id": "b86b304c-cd0c-4e5f-9842-5bcdbfcfc756",
+              "name": "weight",
+              "value": "={{ $json.weight }}",
+              "type": "number"
+            },
+            {
+              "id": "32943da7-e7ab-4241-abab-1ea9f36d2c3c",
+              "name": "types",
+              "value": "={{ $json.types.map(item => item.type).map(item => item.name) }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        0
+      ],
+      "id": "3da66d3b-f59e-48db-a851-d48b66e32448",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://pokeapi.co/api/v2/pokemon/{{ $json.name.trim().toLowerCase() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a978e4ed-d17d-4301-a519-1af8de09cedd",
+      "name": "HTTP Request: pokeapi.co"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: pokeapi.co",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: pokeapi.co": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6619f9eb-2247-4298-afc9-fa7728ad5dfe",
+  "meta": {
+    "instanceId": "ec034f4ec00924227e26a740287d46cdb2435d7c6eed6e6242f82f145235dfc5"
+  },
+  "id": "qyZQZthZUWxgrxh4",
+  "tags": []
+}

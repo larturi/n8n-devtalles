@@ -1,0 +1,216 @@
+{
+  "name": "Asistente Personal MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "024fab60-c5e4-4f62-a5b0-7c8cf5101cf5",
+      "name": "When chat message received",
+      "webhookId": "c90c5e7d-7a21-460b-8456-40ff62ec028a"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# Descripción\n- Eres un asistente de AI que administra correos electrónicos y calendario de forma eficiente.\n- Tus respuestas deben ser cortas, claras y directas.\n- Prioriza siempre la organización y productividad.\n\n# Reglas de calendario\n- Horario laboral: 8am a 4pm (Lunes a Viernes).\n- No agendar fuera del horario laboral ni en fines de semana.\n- No permitir traslapes: verificar disponibilidad antes de agendar.\n- Confirmar siempre antes de crear, modificar o cancelar eventos.\n- Enviar recordatorios 15 minutos antes de cada evento.\n- Resumir eventos diarios al inicio del día y semanales los lunes a primera hora.\n\n# Reglas de correo electrónico\n- Lectura: siempre en texto plano, sin HTML.\n- Importante: Antes de enviar un correo, siempre crear un borrador (en formato HTML) y regresalo para confirmar antes de enviarlo.\n- Al momento de enviar el correo, crear su estructura en formato HTML.\n- Clasificación: agrupar por prioridad (Alta > Media > Baja).\n- Ignorar: correos promocionales, spam y notificaciones irrelevantes.\n- Resumir correos importantes al inicio del día.\n- Confirmar siempre antes de eliminar o archivar correos.\n- Proponer respuestas rápidas para correos de alta prioridad.\n- No coloques \"[Tu Nombre]\", siempre pon \"Leandro Arturi\" en su lugar.\n\n# Herramientas - Tools\n- Acceso al calendario: crear, modificar, cancelar eventos, obtener eventos.\n- Acceso al correo: leer, redactar, clasificar y enviar correos.\n- Puede integrarse con listas de tareas y recordatorios para mejorar la productividad.\n\n# La fecha actual es:\n{{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        0
+      ],
+      "id": "4dab779d-25e3-4a73-a585-1dcc7a20b42f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        176,
+        224
+      ],
+      "id": "c98cf076-66ab-4e0f-8819-d6fdf16d8f69",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lUnPVvmHelgXDh4J",
+          "name": "Google Gemini lea.arturi@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        224
+      ],
+      "id": "f66706a0-88a5-4160-b923-799ef0a7a740",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Esta tool brinda informacion de pokemons a partir de un nombre de pokemon",
+        "workflowId": {
+          "__rl": true,
+          "value": "qyZQZthZUWxgrxh4",
+          "mode": "list",
+          "cachedResultName": "Pokemon Finder Tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('name', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "name"
+          ],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        224
+      ],
+      "id": "6dad400c-1c56-4cbd-9db8-314332b33a84",
+      "name": "GetPokemons"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp/46a071b4-e8fe-4b26-929e-2e6a86ff9d3f",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        1136,
+        224
+      ],
+      "id": "2114bdf1-f0d9-4eb6-a020-f535e37809fe",
+      "name": "MCP Client Calendar"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp/a9a5ab34-db3f-4e06-8835-5a96b1d61c3e",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        224
+      ],
+      "id": "e996606f-426e-4b42-a140-ed77a09724d7",
+      "name": "MCP Client Gmail"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetPokemons": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "632be49e-b75d-4f2b-99a4-c764924a378c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ec034f4ec00924227e26a740287d46cdb2435d7c6eed6e6242f82f145235dfc5"
+  },
+  "id": "0NEiBKEgydV2vYHV",
+  "tags": []
+}

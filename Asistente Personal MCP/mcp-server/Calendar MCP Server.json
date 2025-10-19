@@ -1,0 +1,114 @@
+{
+  "name": "Calendar MCP Server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "46a071b4-e8fe-4b26-929e-2e6a86ff9d3f"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        48
+      ],
+      "id": "90c38a79-de25-4f97-a891-63eba49a91c9",
+      "name": "MCP Server Trigger",
+      "webhookId": "46a071b4-e8fe-4b26-929e-2e6a86ff9d3f"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "c2e57f52f7f3b65f22bc7cb9c067583f8ea9ecbef856612672114c1f87be44f4@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "n8n"
+        },
+        "returnAll": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_All', ``, 'boolean') }}",
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        288
+      ],
+      "id": "e91bf525-17bc-4382-ae4b-3b341cc234cf",
+      "name": "get_many_events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GD73UJGjicosDd7E",
+          "name": "Google Calendar: lea.arturi@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c2e57f52f7f3b65f22bc7cb9c067583f8ea9ecbef856612672114c1f87be44f4@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "n8n"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "location": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Location', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -48,
+        288
+      ],
+      "id": "1a110175-26c1-42d4-9a9f-86159707794a",
+      "name": "create_event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GD73UJGjicosDd7E",
+          "name": "Google Calendar: lea.arturi@gmail.com"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "get_many_events": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_event": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "71407f25-4070-41cd-8c28-dcb7cfa375b8",
+  "meta": {
+    "instanceId": "ec034f4ec00924227e26a740287d46cdb2435d7c6eed6e6242f82f145235dfc5"
+  },
+  "id": "14Mfa9W0qQAlEOsS",
+  "tags": []
+}

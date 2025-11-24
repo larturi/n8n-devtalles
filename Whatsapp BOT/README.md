@@ -1,8 +1,8 @@
-# Telegram Bot (devtalles_n8n_bot)
+# Wahatsapp Bot (devtalles_n8n_bot)
 
 ## Resumen
 
-Este proyecto usa n8n levantado localmente con Docker. Para que Telegram envíe actualizaciones a tu instancia local (webhooks) debes exponer n8n mediante una URL pública (por ejemplo usando ngrok). También debes crear un bot en Telegram con BotFather y usar su token para configurar el webhook.
+Este proyecto usa n8n levantado localmente con Docker. Para que Whatsapp envíe actualizaciones a tu instancia local (webhooks) debes exponer n8n mediante una URL pública (por ejemplo usando ngrok). También debes crear un bot en Telegram con BotFather y usar su token para configurar el webhook.
 
 > Nota de seguridad: el token del bot permite controlar el bot. No lo compartas ni lo publiques. Si crees que se filtró, revoca/regenera el token desde BotFather.
 
@@ -10,14 +10,14 @@ Este proyecto usa n8n levantado localmente con Docker. Para que Telegram envíe 
 
 - Docker y Docker Compose para levantar n8n
 - ngrok (o cualquier herramienta que haga tunneling a localhost)
-- Cuenta de Telegram
+- Cuenta de Whatsapp Bussines (Meta)
 
 ## Pasos rápidos
 
 1. Levantar n8n (desde la carpeta del repo):
 
 ```bash
-cd "Telegram BOT/n8n-compose"
+cd "Whatsapp BOT/n8n-compose"
 docker compose up -d
 ```
 

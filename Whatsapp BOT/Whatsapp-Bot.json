@@ -1,0 +1,942 @@
+{
+  "name": "Whatsapp - Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        192
+      ],
+      "id": "ac2cf5c0-0746-4678-a219-322a1dc50612",
+      "name": "WhatsApp Trigger",
+      "webhookId": "e74d8336-c773-429d-bc04-b0cec73067cd",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "2dNw82LMLDKJHWge",
+          "name": "WhatsApp - Client ID"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "747068238490272",
+        "recipientPhoneNumber": "={{ $('Extraer y unir datos').item.json.wa_id }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        384
+      ],
+      "id": "906c5e1a-acd0-4a3a-9c41-ef1d203c058e",
+      "name": "Enviar mensaje de texto",
+      "webhookId": "2ecc0808-43af-4ebb-83f9-a4d4657d672b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YyuZEHZzB17MEbmo",
+          "name": "WhatsApp - Business account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Text message\n",
+        "height": 256,
+        "width": 832,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "b7f3cc78-6718-47f9-8a8c-dc3bf315bffe",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].text.body }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "597fcbc2-2e66-488a-bd27-5a4e9bffdf68"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text-message"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e3c4e9e3-512f-438d-82ea-a577f1be8227",
+                    "leftValue": "={{ $json.messages[0].image }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image-message"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "550765e1-5fea-4b00-b4cc-5786ea3d60ce",
+                    "leftValue": "={{ $json.messages[0].document.mime_type }}",
+                    "rightValue": "image/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image-document"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "75cdb764-bf13-4be2-8b37-705a3b0bf7ed",
+                    "leftValue": "={{ $json.messages[0].audio }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio-message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1024,
+        160
+      ],
+      "id": "5edc5759-183b-4443-af2e-76886a1605cb",
+      "name": "¿Qué tipo de mensaje es?"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"userPrompt\": {{ $json.messages[0].text.body.toJsonString() }},\n  \"type\": \"text-message\",\n  \"ai\": \"\",\n  \"wa_id\": {{ $json.contacts[0].wa_id }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        -96
+      ],
+      "id": "50f3caf0-a4c0-444b-86c9-aa5a61d31bf5",
+      "name": "Extraer información de persona"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  userPrompt: $input.first().json.userPrompt,\n  type: $input.first().json.type,\n  ai: $input.first().json.ai,\n  wa_id: $input.first().json.wa_id.toString()\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        272
+      ],
+      "id": "75b0d8e0-b9d9-4084-8890-ae0e4312b483",
+      "name": "Extraer y unir datos"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.userPrompt }}",
+        "options": {
+          "systemMessage": "=Eres un asistente que ayuda a las personas con preguntas de conocimiento general.\n\nPuedes recibir información de un AI que analiza la imagen, si no viene nada en la parte de AI, entonces responde el prompt con la información que conozcas.\n\nTambién puedes recibir mensajes o userPrompt que serán transcritos mediante AI también, el userPrompt puede venir de un audio.\n\n\n## Imagen analizada por AI:\n{{ $json.ai }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        272
+      ],
+      "id": "577c26ad-7b07-40b7-8c5c-c7500ac0d334",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        576
+      ],
+      "id": "a3ddb154-da4c-4be4-9005-fa669c697cf0",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "UY22JsHeyRNtXgtS",
+          "name": "OpenAi - fernando.devtalles@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.wa_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        576
+      ],
+      "id": "d690c444-2f92-4956-9dc7-32f7044ef2bf",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "content": "## Image message\n",
+        "height": 304,
+        "width": 832,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "cc33b9d7-f9e6-4b2b-a45c-cda6dd3a0d76",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].image.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        192
+      ],
+      "id": "24939b96-880d-4a57-9dfc-bc90dbb0c771",
+      "name": "Descargar media",
+      "webhookId": "5d3f7570-4fb1-4f0a-a2de-1a3a8e0b9665",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YyuZEHZzB17MEbmo",
+          "name": "WhatsApp - Business account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -192,
+        192
+      ],
+      "id": "5ab6d02a-95e2-4ebb-b802-2f31b65aa11c",
+      "name": "Obtener archivo",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ZbUphqQryP78BGy6",
+          "name": "Whatsapp Bearer token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "={{ $('WhatsApp Trigger').item.json.messages[0].image.caption || \n'¿Qué hay en la imagen?'\n\n}}",
+        "inputType": "base64",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -16,
+        192
+      ],
+      "id": "96b17b60-f913-47ba-a646-22b07fe79d52",
+      "name": "Analizar imagen",
+      "credentials": {
+        "openAiApi": {
+          "id": "UY22JsHeyRNtXgtS",
+          "name": "OpenAi - fernando.devtalles@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"userPrompt\": {{ $('WhatsApp Trigger').item.json.messages[0].image.caption?.toJsonString() || '¿Qué hay en la imagen?' }},\n  \"type\": \"text-message\",\n  \"ai\": {{ $json.content.toJsonString() }},\n  \"wa_id\": {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        192
+      ],
+      "id": "69abcb9a-e151-482e-b5b8-f55fcfd593d3",
+      "name": "Extraer información de persona1"
+    },
+    {
+      "parameters": {
+        "content": "## Image document message\n",
+        "height": 304,
+        "width": 832,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "6aafece6-bfaf-409a-b812-4a8e701ac115",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].document.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        512
+      ],
+      "id": "ce6cf59e-ce73-4eaa-82eb-83f224ca5d74",
+      "name": "Descargar media1",
+      "webhookId": "5d3f7570-4fb1-4f0a-a2de-1a3a8e0b9665",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YyuZEHZzB17MEbmo",
+          "name": "WhatsApp - Business account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -192,
+        512
+      ],
+      "id": "d11a7aee-4573-4fe0-bedd-f1d00cf8f84e",
+      "name": "Obtener archivo1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ZbUphqQryP78BGy6",
+          "name": "Whatsapp Bearer token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "={{ $('WhatsApp Trigger').item.json.messages[0].document.caption || \n'¿Qué hay en la imagen?'\n\n}}",
+        "inputType": "base64",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -16,
+        512
+      ],
+      "id": "dc87a5c5-7937-47e7-8863-39a642ef3dde",
+      "name": "Analizar imagen1",
+      "credentials": {
+        "openAiApi": {
+          "id": "UY22JsHeyRNtXgtS",
+          "name": "OpenAi - fernando.devtalles@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"userPrompt\": {{ $('WhatsApp Trigger').item.json.messages[0].document.caption?.toJsonString() || '¿Qué hay en la imagen?' }},\n  \"type\": \"text-message\",\n  \"ai\": {{ $json.content.toJsonString() }},\n  \"wa_id\": {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        512
+      ],
+      "id": "78c71623-35f6-4b34-9ef3-04bd92ad891d",
+      "name": "Extraer información de persona2"
+    },
+    {
+      "parameters": {
+        "content": "## Audio message\n",
+        "height": 304,
+        "width": 832,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        736
+      ],
+      "typeVersion": 1,
+      "id": "0b9fb31e-a4ef-4584-835b-63a4af552c78",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].audio.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        832
+      ],
+      "id": "d1622765-adb2-42fe-add6-4c2847f5d532",
+      "name": "Descargar media2",
+      "webhookId": "5d3f7570-4fb1-4f0a-a2de-1a3a8e0b9665",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YyuZEHZzB17MEbmo",
+          "name": "WhatsApp - Business account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -208,
+        832
+      ],
+      "id": "c9bab14d-da6b-4ce0-af1f-e67672a43667",
+      "name": "Obtener archivo2",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ZbUphqQryP78BGy6",
+          "name": "Whatsapp Bearer token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"userPrompt\": {{ $json.text.toJsonString() }},\n  \"type\": \"audio-message\",\n  \"ai\": \"\",\n  \"wa_id\": {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        832
+      ],
+      "id": "ab758413-f099-446f-805e-2bb3764733c8",
+      "name": "Extraer información de persona3"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -16,
+        832
+      ],
+      "id": "ec272b16-1bc2-4864-a08a-f5cd5ee26459",
+      "name": "Transcribir audio",
+      "credentials": {
+        "openAiApi": {
+          "id": "UY22JsHeyRNtXgtS",
+          "name": "OpenAi - fernando.devtalles@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c01556d3-5296-4788-8c07-931b02ed790c",
+              "leftValue": "={{ $('Extraer y unir datos').item.json.type }}",
+              "rightValue": "audio-message",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1168,
+        288
+      ],
+      "id": "660682bd-045b-4d75-8095-6fc21ad52d50",
+      "name": "¿Es audio?"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $json.output }}",
+        "options": {
+          "response_format": "opus"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1392,
+        160
+      ],
+      "id": "f9d9e6f1-90e9-4fcf-807f-205fd37ea5a9",
+      "name": "Generar audio",
+      "credentials": {
+        "openAiApi": {
+          "id": "UY22JsHeyRNtXgtS",
+          "name": "OpenAi - fernando.devtalles@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "747068238490272",
+        "recipientPhoneNumber": "={{ $('Extraer y unir datos').item.json.wa_id }}",
+        "messageType": "audio",
+        "mediaPath": "useMedian8n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1696,
+        160
+      ],
+      "id": "e7bad148-1663-4f52-9086-f48a4a5097a5",
+      "name": "Enviar mensaje de texto1",
+      "webhookId": "2ecc0808-43af-4ebb-83f9-a4d4657d672b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "YyuZEHZzB17MEbmo",
+          "name": "WhatsApp - Business account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Procesar información\n",
+        "height": 624,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        144
+      ],
+      "id": "2dce3c12-f391-47dc-84ea-896f0fae2d1f",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "¿Qué tipo de mensaje es?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Qué tipo de mensaje es?": {
+      "main": [
+        [
+          {
+            "node": "Extraer información de persona",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descargar media",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descargar media1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descargar media2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer información de persona": {
+      "main": [
+        [
+          {
+            "node": "Extraer y unir datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer y unir datos": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "¿Es audio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar media": {
+      "main": [
+        [
+          {
+            "node": "Obtener archivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener archivo": {
+      "main": [
+        [
+          {
+            "node": "Analizar imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizar imagen": {
+      "main": [
+        [
+          {
+            "node": "Extraer información de persona1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer información de persona1": {
+      "main": [
+        [
+          {
+            "node": "Extraer y unir datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar media1": {
+      "main": [
+        [
+          {
+            "node": "Obtener archivo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener archivo1": {
+      "main": [
+        [
+          {
+            "node": "Analizar imagen1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizar imagen1": {
+      "main": [
+        [
+          {
+            "node": "Extraer información de persona2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer información de persona2": {
+      "main": [
+        [
+          {
+            "node": "Extraer y unir datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar media2": {
+      "main": [
+        [
+          {
+            "node": "Obtener archivo2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener archivo2": {
+      "main": [
+        [
+          {
+            "node": "Transcribir audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribir audio": {
+      "main": [
+        [
+          {
+            "node": "Extraer información de persona3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer información de persona3": {
+      "main": [
+        [
+          {
+            "node": "Extraer y unir datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es audio?": {
+      "main": [
+        [
+          {
+            "node": "Generar audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar mensaje de texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar audio": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensaje de texto1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c418f1b8-1b07-4dd8-bbab-e02fca9d25c4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1477031a933c5e2f01e41fe7ccf9a8d61ec13da0b5dcebb28cdc82d3a964c9f8"
+  },
+  "id": "VPEvb8TWUyE9Zfn7",
+  "tags": []
+}
